@@ -176,9 +176,24 @@ export default defineComponent({
   },
   methods: {
     downloadResume() {
-      alert('Resume download would start here. Replace with actual download functionality.');
-      // In a real implementation, you would have:
-      // window.open('/path-to-resume.pdf', '_blank');
+      const fileId = '1-sJtqwehpClbh9ZgUA3OI-KNoZX0AB_v';
+      const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+      
+      // Create a temporary anchor element
+      const link = document.createElement('a');
+      link.href = directDownloadUrl;
+      link.setAttribute('download', 'Javier_Albertoni_Resume.pdf');
+      link.setAttribute('target', '_blank');
+      link.style.display = 'none';
+      
+      // Append to the document, trigger click, and remove
+      document.body.appendChild(link);
+      link.click();
+      
+      // Small timeout before removing the element
+      setTimeout(() => {
+        document.body.removeChild(link);
+      }, 100);
     },
     animateOnScroll() {
       const sections = document.querySelectorAll('.bio-section, .timeline-section, .education-section, .interests-section, .cta-section');

@@ -92,10 +92,6 @@
                     <span>View Live Site</span>
                     <span class="icon">↗</span>
                   </a>
-                  <a :href="project.github" class="project-link github" v-if="project.github" target="_blank" rel="noopener noreferrer">
-                    <span>GitHub</span>
-                    <span class="icon">↗</span>
-                  </a>
                 </div>
               </div>
             </div>
@@ -172,7 +168,7 @@ export default defineComponent({
   data() {
     return {
       currentTestimonial: 0,
-      hoveredProject: null,
+      hoveredProject: null as number | null,
       featuredProjects: [
       {
           id: 1,
@@ -281,12 +277,13 @@ export default defineComponent({
       if (this.$refs.floatingElements) {
         // Track mouse movement for parallax effect
         document.addEventListener('mousemove', (e) => {
-          const elements = this.$refs.floatingElements.querySelectorAll('[data-depth]');
-          elements.forEach(el => {
-            const depth = parseFloat(el.getAttribute('data-depth'));
+          const floatingElements = this.$refs.floatingElements as HTMLElement;
+          const elements = floatingElements.querySelectorAll('[data-depth]');
+          elements.forEach((el: Element) => {
+            const depth = parseFloat(el.getAttribute('data-depth') || '0');
             const moveX = (e.clientX - window.innerWidth / 2) * depth / 10;
             const moveY = (e.clientY - window.innerHeight / 2) * depth / 10;
-            el.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            (el as HTMLElement).style.transform = `translate(${moveX}px, ${moveY}px)`;
           });
         });
       }
@@ -371,6 +368,7 @@ export default defineComponent({
   color: white;
   position: relative;
   overflow: hidden;
+  padding-top: 70px; /* Add padding for navbar */
 }
 
 .particles-container {
@@ -1241,6 +1239,16 @@ export default defineComponent({
   text-align: center;
 }
 
+.cta-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
 .cta-title {
   font-size: 3rem;
   font-weight: 700;
@@ -1253,11 +1261,30 @@ export default defineComponent({
   opacity: 0.9;
 }
 
+.cta-section .btn {
+  min-width: 180px;
+}
+
 /* Responsive design enhancements */
 @media (max-width: 992px) {
   .hero .container {
     grid-template-columns: 1fr;
     text-align: center;
+    padding-top: 20px; /* Add padding on smaller devices */
+  }
+
+  .hero {
+    padding-top: 80px; /* Increased padding for navbar on smaller devices */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .hero-description {
@@ -1287,6 +1314,11 @@ export default defineComponent({
 }
 
 @media (max-width: 768px) {
+  .hero {
+    padding-top: 90px; /* Even more padding on mobile */
+    min-height: 90vh; /* Slightly reduce height to accommodate content */
+  }
+
   .hero-title {
     font-size: 3.2rem;
   }
@@ -1323,9 +1355,33 @@ export default defineComponent({
   .cta-title {
     font-size: 2.5rem;
   }
+
+  .cta-section {
+    padding: 70px 0;
+  }
+  
+  .cta-title {
+    font-size: 2.5rem;
+  }
+  
+  .cta-text {
+    font-size: 1.2rem;
+    margin: 0 0 30px;
+  }
 }
 
 @media (max-width: 480px) {
+  .hero {
+    padding-top: 70px;
+    justify-content: center;
+    align-items: flex-start; /* Align items at the top with padding */
+    min-height: 100vh; /* Full viewport height to center content */
+  }
+
+  .hero .container {
+    margin-top: 30px; /* Additional margin at the top */
+  }
+
   .hero-title {
     font-size: 2.5rem;
   }
@@ -1370,6 +1426,29 @@ export default defineComponent({
 
   .cta-title {
     font-size: 2rem;
+  }
+
+  .cta-section {
+    padding: 60px 20px;
+  }
+  
+  .cta-content {
+    width: 100%;
+  }
+  
+  .cta-title {
+    font-size: 2rem;
+    word-wrap: break-word;
+  }
+  
+  .cta-text {
+    font-size: 1.1rem;
+    margin: 0 0 25px;
+  }
+  
+  .cta-section .btn {
+    width: 100%;
+    max-width: 250px;
   }
 }
 
@@ -1726,6 +1805,20 @@ export default defineComponent({
   
   .cta-text {
     font-size: 0.95rem;
+  }
+
+  .cta-section {
+    padding: 50px 10px; /* Reduce padding on very small screens */
+  }
+  
+  .cta-section .btn {
+    width: 100%;
+    max-width: 220px;
+    padding: 10px 15px; /* Smaller padding */
+    font-size: 0.85rem; /* Smaller font size */
+    box-sizing: border-box;
+    overflow: hidden; /* Prevent text overflow */
+    white-space: nowrap; /* Keep text on one line */
   }
 }
 </style>
