@@ -1,0 +1,21 @@
+{
+  "name": "vue-portfolio",
+  "version": "1.0.0",
+  "description": "A web portfolio built with TypeScript and Vue, deployed on Netlify.",
+  "author": "Your Name",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.2.0",
+    "vue-router": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.0",
+    "vite": "^2.6.0",
+    "@vitejs/plugin-vue": "^1.9.0"
+  }
+}
