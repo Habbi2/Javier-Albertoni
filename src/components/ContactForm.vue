@@ -254,9 +254,11 @@ export default defineComponent({
           to_email: 'javieralbertoni@gmail.com',
           from_name: this.form.name,
           from_email: this.form.email,
-          subject: this.form.subject,
-          message: this.form.message,
-          reply_to: this.form.email
+          subject: `Portfolio Contact: ${this.form.subject}`,
+          message: `From: ${this.form.name} (${this.form.email})\n\n${this.form.message}`,
+          reply_to: this.form.email,
+          sender_name: this.form.name,  // Additional parameter for clarity
+          sender_email: this.form.email // Additional parameter for clarity
         };
         
         // Send email using EmailJS - note we're using emailjs.sendForm instead of emailjs.send
