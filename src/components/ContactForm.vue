@@ -104,11 +104,19 @@
       <p>Thank you for reaching out. I'll get back to you as soon as possible.</p>
       <button class="reset-btn" @click="resetForm">Send Another Message</button>
     </div>
+    
+    <div class="form-error" v-if="formError">
+      <div class="error-icon">!</div>
+      <h3>Message Failed to Send</h3>
+      <p>There was an error sending your message. Please try again or contact me directly at javieralbertoni@gmail.com</p>
+      <button class="reset-btn" @click="retryForm">Try Again</button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import emailjs from '@emailjs/browser';
 
 interface FormData {
   name: string;
@@ -116,6 +124,12 @@ interface FormData {
   subject: string;
   message: string;
 }
+
+// Configure EmailJS with your service ID, template ID and public key
+// Using EmailJS's built-in email service to avoid Gmail API authentication issues
+const EMAILJS_SERVICE_ID = 'service_swvkgjr'; // Your EmailJS service ID
+const EMAILJS_TEMPLATE_ID = 'template_huspw8c'; // Create this template in EmailJS
+const EMAILJS_USER_ID = 'V9EF7LaENOBJNwFaS'; // Your EmailJS User ID (public key)
 
 export default defineComponent({
   name: 'ContactForm',
@@ -142,6 +156,7 @@ export default defineComponent({
       focused: '',
       isSubmitting: false,
       formSubmitted: false,
+      formError: false,
       submitButtonText: 'Send Message'
     };
   },
@@ -230,10 +245,27 @@ export default defineComponent({
       
       this.isSubmitting = true;
       this.submitButtonText = 'Sending...';
+      this.formError = false;
       
       try {
-        // Simulate an API call
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Prepare template parameters for EmailJS
+        const templateParams = {
+          to_name: 'Javier',
+          to_email: 'javieralbertoni@gmail.com',
+          from_name: this.form.name,
+          from_email: this.form.email,
+          subject: this.form.subject,
+          message: this.form.message,
+          reply_to: this.form.email
+        };
+        
+        // Send email using EmailJS - note we're using emailjs.sendForm instead of emailjs.send
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          templateParams,
+          EMAILJS_USER_ID
+        );
         
         // Form submission successful
         this.formSubmitted = true;
@@ -257,9 +289,9 @@ export default defineComponent({
       } catch (error) {
         // Handle submission error
         this.isSubmitting = false;
+        this.formError = true;
         this.submitButtonText = 'Try Again';
         console.error('Error submitting form:', error);
-        // You could add error handling here
       }
     },
     resetForm() {
@@ -283,6 +315,10 @@ export default defineComponent({
         subject: false,
         message: false
       };
+    },
+    retryForm() {
+      this.formError = false;
+      this.submitButtonText = 'Send Message';
     }
   }
 });
@@ -767,6 +803,58 @@ export default defineComponent({
   
   .input-container textarea {
     min-height: 80px;
+  }
+}
+
+.form-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #1f1f1f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  animation: slideIn 0.5s forwards;
+}
+
+.error-icon {
+  width: 80px;
+  height: 80px;
+  background-color: #e74c3c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+  margin-bottom: 20px;
+  animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Responsive styles for the error state */
+@media (max-width: 480px) {
+  .form-error {
+    padding: 20px 15px;
+  }
+  
+  .error-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+}
+
+/* Fix for landscape mode on mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .form-error {
+    padding-top: 15px;
+    padding-bottom: 15px;
   }
 }
 </style>
