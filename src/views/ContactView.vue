@@ -30,7 +30,7 @@
                 <div class="contact-icon">📱</div>
                 <div class="contact-text">
                   <h3>Phone</h3>
-                  <p><a href="tel:+12345678901">+54 (11) 3059-9215</a></p>
+                  <p><a href="tel:+54113059-9215">+54 (11) 3059-9215</a></p>
                 </div>
               </div>
               
